@@ -66,13 +66,10 @@ var kover = {
     });
   },
 
-
   // create stubs for an array of classes
   requireList: function(list, callback) {  
     kover.rpc_exec('Kover.rpc_white_list_for', [list], function(stub){
       stub = stub || {result:[]}
-
-      obj = {}
 
       //create stubs for methods
       for(i in stub.result) {
