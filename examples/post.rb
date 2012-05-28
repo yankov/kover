@@ -3,12 +3,14 @@ class Post
 
   allow_rpc_for :create, :edit
 
-  def create(name)
-    "created #{name}"
-  end
+  class << self
+    def create(name)
+      "created #{name}"
+    end
 
-  def edit(name)
-    "edited #{name}"
+    def edit(name)
+      "edited #{name}"
+    end
   end
 
 end

@@ -27,7 +27,7 @@ module Kover
     end
 
     def run
-      id = Vertx::EventBus.register_handler('some-address') do |message|
+      id = Vertx::EventBus.register_handler('eventbus') do |message|
        result = Kover.proccess(message.body)
        message.reply(result)
       end
