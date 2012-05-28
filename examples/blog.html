@@ -1,0 +1,21 @@
+<script type='text/javascript' src='../js/sockjs-0.2.min.js'></script>
+<script type='text/javascript' src='../js/vertxbus.js'></script>
+<script type='text/javascript' src='../js/kover.js'></script>
+
+<script type="text/javascript">
+
+  var settings = {
+    host: "192.168.1.9",
+    port: 8080,
+    require: ["user", "post"]
+  }
+
+  kover.run(settings, function(){
+
+    // all code goes inside
+    
+    console.log(user);
+    console.log(post);
+  }); 
+
+</script>
