@@ -2,6 +2,10 @@
 <script type='text/javascript' src='../js/vertxbus.js'></script>
 <script type='text/javascript' src='../js/kover.js'></script>
 
+<a href="#" call="User.met1" params="2,2" render_to="div1" />link</a>
+<a href="#" call="User.met2" params="3,2" render_to="div2" />link 2</a>
+<a href="#" call="User.met1" params="4,5" render_to="div3" />link 3</a>
+
 <script type="text/javascript">
 
   var settings = {
@@ -13,7 +17,6 @@
   kover.run(settings, function(){
 
     // all code goes inside
-    
     console.log(user);
     console.log(post);
   }); 

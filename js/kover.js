@@ -32,9 +32,9 @@ vertx.connect = function(host, port, callback) {
     vertx.connection.onopen = function() {
       console.log('connected');
 
-      vertx.connection.registerHandler(vertx.user_channel, function(message) {
-        console.log('received a message: ' + JSON.stringify(message));
-      });
+      // vertx.connection.registerHandler(vertx.user_channel, function(message) {
+      //   console.log('received a message: ' + JSON.stringify(message));
+      // });
       
       callback();
 
@@ -46,13 +46,50 @@ vertx.connect = function(host, port, callback) {
 
 }
 
-
 var kover = {
   run: function(settings, callback) {
+    
+    kover.assignHandlers("a", "click");
+
     vertx.connect(settings.host, settings.port, function() {
       kover.requireList(settings.require, callback)
     });
   },
+
+  assignHandlers: function(tagname, event_name) {
+    elements = document.getElementsByTagName(tagname);
+
+    for (e=0; e<elements.length; e++) {
+
+      // TODO: zomg is there way to make it simple?
+      elements[e].onclick = function() {
+          kover.rpc_exec(this.getAttribute('call'), 
+            kover.parseParams(this),
+            (function(that){
+              return function(message){
+                console.log(message);
+              };
+            })(this)
+        )} 
+      
+    }
+  },
+
+  parseParams: function(obj) {
+     params = obj.getAttribute('params').split(/\ ?,\ ?/);
+     
+     return params.map(function(param){
+       try {
+         param = eval(param);
+         return param;
+       } 
+       catch(err) {
+         return param;
+       }
+     });
+
+  },
+
 
   // function that creates stubs for methods of the required class
   require: function(name, callback) {  
@@ -124,6 +161,6 @@ var kover = {
 
   // formats given arguments in json-rpc format
   json_rpc_format: function(method_name, params, id) {
-    return {"method": method_name, "params": params, user_channel: vertx.user_channel, "id": id}
+    return {"method": method_name, "params": params, "id": id}
   }
 }
