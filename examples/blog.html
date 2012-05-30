@@ -6,11 +6,14 @@
 <a href="#" call="User.met2" params="3,2" render_to="div2" />link 2</a>
 <a href="#" call="User.met1" params="4,5" render_to="div3" />link 3</a>
 
+<div id="boom">It should replace it with the template</div>
+
 <script type="text/javascript">
 
   var settings = {
     host: "192.168.1.9",
     port: 8080,
+    templates: "file:///Users/yankov/projects/kover/examples/templates",
     require: ["user", "post"]
   }
 
@@ -19,6 +22,10 @@
     // all code goes inside
     console.log(user);
     console.log(post);
+
+    // render template from test.ejs to #boom 
+    kover.View.render("test.ejs", { name: "EPA" }, "boom");
+
   }); 
 
 </script>

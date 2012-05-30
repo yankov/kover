@@ -49,6 +49,7 @@ vertx.connect = function(host, port, callback) {
 var kover = {
   run: function(settings, callback) {
     
+    kover.settings = settings;
     kover.assignHandlers("a", "click");
 
     vertx.connect(settings.host, settings.port, function() {
@@ -162,5 +163,61 @@ var kover = {
   // formats given arguments in json-rpc format
   json_rpc_format: function(method_name, params, id) {
     return {"method": method_name, "params": params, "id": id}
+  }
+}
+
+
+/* 
+   A simple template rendering system
+*/
+
+kover.View = {
+
+  // loads contents of static file 
+  loadFile: function(filename, callback) {
+
+    // wanted to be as lightweight as possible, 
+    // so no fancy jQuery in here for now.
+    var client = new XMLHttpRequest();
+    client.open('GET', kover.settings.templates + '/' + filename, false);
+    client.onreadystatechange = function() {
+      callback(client.responseText);
+    }
+    client.send(null);
+  },
+
+  cache: {},  
+
+  tmpl: function(str, data){
+    var fn = !/\W/.test(str) ?
+      cache[str] = cache[str] ||
+        tmpl(document.getElementById(str).innerHTML) :
+      
+      new Function("obj",
+        "var p=[],print=function(){p.push.apply(p,arguments);};" +
+        
+        "with(obj){p.push('" +
+        
+        str
+          .replace(/[\r\t\n]/g, " ")
+          .split("<%").join("\t")
+          .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+          .replace(/\t=(.*?)%>/g, "',$1,'")
+          .split("\t").join("');")
+          .split("%>").join("p.push('")
+          .split("\r").join("\\'")
+      + "');}return p.join('');");
+    
+    return data ? fn( data ) : fn;
+  },
+
+  render: function(filename, data, selector) {
+
+    //TODO: support complex selectors: class, tagname, etc.
+    //also make it so that render can be called on any element where
+    //the template should be rendered in.
+    kover.View.loadFile(filename, function(content){
+       document.getElementById(selector).innerHTML = kover.View.tmpl(content, data);
+    });
   }
 }
