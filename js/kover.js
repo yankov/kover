@@ -69,6 +69,11 @@ var kover = {
             (function(that){
               return function(message){
                 console.log(message);
+
+                if (that.id && (out = document.getElementById(that.id + '.out')) != null ) {
+                  kover.View.render(that.id + '.ejs', message, that.id + '.out');
+                }
+                
               };
             })(this)
         )} 
@@ -168,7 +173,7 @@ var kover = {
 
 
 /* 
-   A simple template rendering system
+   A simple template rendering systemд
 */
 
 kover.View = {
