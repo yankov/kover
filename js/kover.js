@@ -72,9 +72,7 @@ var kover = {
               return function(message){
                 console.log(message);
 
-                if (that.id && (out = document.getElementById(that.id + '.out')) != null ) {
-                  kover.View.render(that.id + '.ejs', message, that.id + '.out');
-                }
+                kover.View.render(that.tplName() + '.ejs', message, that.tplName());
                 
               };
             })(this)
@@ -228,9 +226,24 @@ kover.View = {
 
     //TODO: support complex selectors: class, tagname, etc.
     kover.View.loadFile(filename, function(content){
-       document.getElementById(selector).innerHTML = kover.View.tmpl(content, data);
+       els = document.getElementsByClassName(selector);
+
+       for (i=0; i<els.length; ++i) {
+         els[i].innerHTML = kover.View.tmpl(content, data);
+       }
+        
     });
   }
+}
+
+// gets a template name based on class 
+Element.prototype.tplName = function() {
+  for (i=0; i < this.classList.length; ++i) {
+    if (this.classList[i].match(/tpl\-/)) {
+      return this.classList[i].replace(/tpl\-/, '');
+    }
+  }
+  return "index";
 }
 
 Element.prototype.render = function(filename, data) {
