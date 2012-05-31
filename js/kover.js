@@ -219,10 +219,18 @@ kover.View = {
   render: function(filename, data, selector) {
 
     //TODO: support complex selectors: class, tagname, etc.
-    //also make it so that render can be called on any element where
-    //the template should be rendered in.
     kover.View.loadFile(filename, function(content){
        document.getElementById(selector).innerHTML = kover.View.tmpl(content, data);
     });
   }
 }
+
+Element.prototype.render = function(filename, data) {
+  (function(that){
+    kover.View.loadFile(filename, function(content){
+      that.innerHTML = kover.View.tmpl(content, data);
+    });
+  })(this);
+  
+}
+

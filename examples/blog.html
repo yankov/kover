@@ -3,8 +3,8 @@
 <script type='text/javascript' src='../js/kover.js'></script>
 
 <a href="#" call="User.met1" params="2,2" render_to="div1" />link</a>
-<a href="#" call="User.met2" params="3,2" render_to="div2" />link 2</a>
-<a href="javascript:void(0)" call="User.met1" params="4,10" id="link3" />link 3</a>
+<a href="#" />link 2</a>
+<a href="#" call="User.met1" params="4,10" id="link3" />link 3</a>
 
 <div id="boom">It should replace it with the template</div>
 <div id="div1">div 1</div>
@@ -27,7 +27,9 @@
     console.log(post);
 
     // render template from test.ejs to #boom 
-    kover.View.render("test.ejs", { name: "EPA" }, "boom");
+    // kover.View.render("test.ejs", { name: "EPA" }, "boom");
+
+    document.getElementById('div3').render("test.ejs", { name: "World" });
 
   }); 
 
