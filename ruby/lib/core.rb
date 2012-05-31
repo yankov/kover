@@ -15,7 +15,15 @@ module Kover
       klass = Object.const_get(class_name.capitalize)
 
       begin 
-        result = klass.send(method, *rpc_string['params'].compact)
+        params = rpc_string['params']
+
+        #TODO: find a sexy way to do this 
+        result = if params.is_a?(Array)
+          klass.send(method, *params.compact)
+        else
+          klass.send(method, params)
+        end
+
         json_rpc_format(result, nil, rpc_string['id'])
       rescue => e
         json_rpc_format(nil, e.message, rpc_string['id'])
