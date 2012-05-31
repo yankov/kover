@@ -2,9 +2,16 @@
 <script type='text/javascript' src='../js/vertxbus.js'></script>
 <script type='text/javascript' src='../js/kover.js'></script>
 
-<a href="#" call="User.met1(2,2)" class="tpl-boom trololo hahaha" />link 1</a>
-<a href="#" />link 2</a>
-<a href="#" call="User.met1(1,2)" class="tpl-boom anotherClass" />link 3</a>
+<!-- Links example -->
+<a call="user.met1(2,3)" class="tpl-boom" />link 1</a>
+<a call="User.met1(6,2)" class="tpl-boom" />link 2</a>
+
+<!-- Form example -->
+<form call="User.create" style="border: 1px solid black; padding:5px;width:300px;">
+  <p>First Name: <input type="text" name="first_name"  /> </p>
+  <p>Last Name: <input type="text" name="last_name"  /> </p>
+  <input type="submit" value="Save" />
+</form>
 
 <div class="boom">links output</div>
 <div id="div3" class="boom2">...</div>

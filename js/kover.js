@@ -50,7 +50,9 @@ var kover = {
   run: function(settings, callback) {
     
     kover.settings = settings;
-    kover.assignHandlers("a", "click");
+
+    kover.assignHandlers("a", "onclick");
+    kover.assignHandlers("form", "onsubmit");
 
     vertx.connect(settings.host, settings.port, function() {
       kover.requireList(settings.require, callback)
@@ -61,23 +63,26 @@ var kover = {
     elements = document.getElementsByTagName(tagname);
 
     for (e=0; e<elements.length; e++) {
+      elements[e].href = "javascript:void(0)";
 
+      if (elements[e].getAttribute('call') == null) continue;
 
       // TODO: zomg is there way to make it simple?
-      elements[e].onclick = function() {
+      elements[e][event_name] = function() {
+
+          params = this.tagName == "FORM" ? kover.Forms.getParams(this) : kover.parseParams(this);
 
           kover.rpc_exec(this.getAttribute('call').replace(/\(.*\)/,''), 
-            kover.parseParams(this),
+            params,
             (function(that){
               return function(message){
                 console.log(message);
-
                 kover.View.render(that.tplName() + '.ejs', message, that.tplName());
-                
               };
             })(this)
-        )} 
-      
+        )
+          return false;
+      } 
     }
   },
 
@@ -119,8 +124,8 @@ var kover = {
          return function() {      
             params = Array.prototype.slice.call(arguments);
 
-            func = arguments[arguments.length - 1]
-            
+            func = arguments[arguments.length - 1];
+          
             kover.rpc_exec(name + "." + method, params, function(message) {
               func(message);  
             })
@@ -233,6 +238,23 @@ kover.View = {
        }
         
     });
+  }
+}
+
+kover.Forms = {
+  getParams: function(o) {
+    f_params = {}
+    for(i=0;i<o.elements.length;++i) {
+
+      value = o.elements[i]['value'];
+      name = o.elements[i]['name'];
+
+      if (name && value) {
+        f_params[o.elements[i]['name']] = o.elements[i]['value'];
+      }
+    }  
+
+    return f_params;
   }
 }
 
