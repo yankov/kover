@@ -2,14 +2,14 @@
 <script type='text/javascript' src='../js/vertxbus.js'></script>
 <script type='text/javascript' src='../js/kover.js'></script>
 
-<a href="#" call="User.met1" params="2,2" render_to="div1" />link</a>
+<a href="#" call="User.met1(2,2)" id="link1" />link 1</a>
 <a href="#" />link 2</a>
-<a href="#" call="User.met1" params="4,10" id="link3" />link 3</a>
+<a href="#" call="User.met1(1,2)" id="link3" />link 3</a>
 
-<div id="boom">It should replace it with the template</div>
-<div id="div1">div 1</div>
-<div id="link3.out">div 2</div>
-<div id="div3">div 3</div>
+<div id="link1.out">link 1 output</div>
+<div id="link3.out">link 3 output</div>
+<div id="div3">...</div>
+
 
 <script type="text/javascript">
 

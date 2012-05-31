@@ -62,9 +62,11 @@ var kover = {
 
     for (e=0; e<elements.length; e++) {
 
+
       // TODO: zomg is there way to make it simple?
       elements[e].onclick = function() {
-          kover.rpc_exec(this.getAttribute('call'), 
+
+          kover.rpc_exec(this.getAttribute('call').replace(/\(.*\)/,''), 
             kover.parseParams(this),
             (function(that){
               return function(message){
@@ -82,7 +84,13 @@ var kover = {
   },
 
   parseParams: function(obj) {
-     params = obj.getAttribute('params').split(/\ ?,\ ?/);
+     params = obj.getAttribute('call').match(/\(.*\)/) || obj.getAttribute('params')
+
+     params = params instanceof Array ? params[0] : params;
+
+     if (!params) return [];
+
+     params = params.replace(/\(|\)/g,'').split(/\ ?,\ ?/);
      
      return params.map(function(param){
        try {
@@ -195,8 +203,8 @@ kover.View = {
 
   tmpl: function(str, data){
     var fn = !/\W/.test(str) ?
-      cache[str] = cache[str] ||
-        tmpl(document.getElementById(str).innerHTML) :
+      kover.View.cache[str] = kover.View.cache[str] ||
+        kover.View.tmpl(document.getElementById(str).innerHTML) :
       
       new Function("obj",
         "var p=[],print=function(){p.push.apply(p,arguments);};" +
