@@ -112,9 +112,9 @@ var kover = {
   require: function(name, callback) {  
     kover.rpc_exec(name + '.rpc_white_list', [], function(stub){
 
-      stub = stub || {result:[]}
+      stub = stub || {result:[]};
 
-      obj = {}
+      obj = {};
 
       //create stubs for methods
       for(i in stub.result) {
@@ -178,7 +178,7 @@ var kover = {
 
   // formats given arguments in json-rpc format
   json_rpc_format: function(method_name, params, id) {
-    return {"method": method_name, "params": params, "id": id}
+    return {"method": method_name, "params": params, "id": id};
   }
 }
 
