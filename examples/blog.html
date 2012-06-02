@@ -6,15 +6,24 @@
 <a call="user.met1(2,3)" class="tpl-boom" />link 1</a>
 <a call="user.met1(6,2)" class="tpl-boom" />link 2</a>
 
-<!-- Form example -->
+<!-- Form example: save to the dabase -->
 <form call="user.create" style="border: 1px solid black; padding:5px;width:300px;" class="tpl-user">
   <p>First Name: <input type="text" name="first_name"  /> </p>
   <p>Last Name: <input type="text" name="last_name"  /> </p>
   <input type="submit" value="Save" />
 </form>
 
+<!-- Form example: get from the database -->
+<form call="user.find_by_name" style="border: 1px solid black; padding:5px;width:300px;" class="tpl-showuser">
+  <p>First Name: <input type="text" name="first_name"  /> </p>
+  <input type="submit" value="Find" />
+</form>
+
+
 <div class="boom">links output</div>
-<div class="user">form output</div>
+<div class="user">form 1 output</div>
+<div class="showuser">form 2 output</div>
+
 <div id="div3" class="boom2">...</div>
 
 
