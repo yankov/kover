@@ -19,12 +19,15 @@
   <input type="submit" value="Find" />
 </form>
 
-
 <div class="boom">links output</div>
 <div class="user">form 1 output</div>
 <div class="showuser">form 2 output</div>
 
 <div id="div3" class="boom2">...</div>
+
+<div append-on="news" class="tpl-news">
+
+</div>
 
 
 <script type="text/javascript">
@@ -46,6 +49,10 @@
     // kover.View.render("test.ejs", { name: "EPA" }, "boom");
 
     document.getElementById('div3').render("test.ejs", { name: "World" });
+
+    window.addEventListener('xyz', function(data){
+      console.log('hello ' + data.memo.name);
+    }, false);
 
   }); 
 

@@ -32,9 +32,14 @@ vertx.connect = function(host, port, callback) {
     vertx.connection.onopen = function() {
       console.log('connected');
 
-      // vertx.connection.registerHandler(vertx.user_channel, function(message) {
-      //   console.log('received a message: ' + JSON.stringify(message));
-      // });
+      vertx.connection.registerHandler("public_events", function(message) {
+        console.log('received a message: ' + JSON.stringify(message));
+
+        if (message.event) {
+          kover.Events.trigger(message.event, window, message.data);
+        }
+
+      });
       
       callback();
 
@@ -258,6 +263,51 @@ kover.Forms = {
   }
 }
 
+
+kover.Events = {
+  events: {},
+
+  findOrCreate: function(event_name) {
+    if (kover.Events.events[event_name])
+         return kover.Events.events[event_name];
+
+    return kover.Events.createEvent(event_name);
+  },
+
+  createEvent: function(event_name) {
+    var event;
+    
+    if (document.createEvent) {
+      event = document.createEvent("HTMLEvents");
+      event.initEvent(event_name, true, true);
+    } else {
+      event = document.createEventObject();
+      event.eventType = event_name;
+    }
+
+    event.eventName = event_name;
+    event.memo = { trolo:'sdsss' };    
+
+    kover.Events.events[event_name] = event;
+
+    return event;
+  },
+
+  trigger: function(event_name, o, data) {
+    o = o || window;
+    data = data || {};
+
+    event = kover.Events.findOrCreate(event_name);
+    event.memo = data;
+
+    if (document.createEvent) {
+      o.dispatchEvent(event);
+    } else {
+      o.fireEvent("on" + event.eventType, event);
+    }
+  }
+}
+
 // gets a template name based on class 
 Element.prototype.tplName = function() {
   for (i=0; i < this.classList.length; ++i) {
@@ -275,5 +325,9 @@ Element.prototype.render = function(filename, data) {
     });
   })(this);
   
+}
+
+Element.prototype.triggerEvent = function(event_name, data) {
+  kover.Events.trigger(event_name, this, data);
 }
 
