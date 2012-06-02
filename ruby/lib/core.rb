@@ -37,6 +37,8 @@ module Kover
     def run
       id = Vertx::EventBus.register_handler('eventbus') do |message|
        result = Kover.proccess(message.body)
+       p "!!!"
+       p result
        message.reply(result)
       end
     end
