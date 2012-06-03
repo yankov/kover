@@ -37,6 +37,7 @@ vertx.connect = function(host, port, callback) {
 
         if (message.event) {
           kover.Events.trigger(message.event, window, message.data);
+          kover.Events.updateSubscribersFor(message.event, message.data);
         }
 
       });
@@ -58,6 +59,7 @@ var kover = {
 
     kover.assignHandlers("a", "onclick");
     kover.assignHandlers("form", "onsubmit");
+    kover.getEventSubscribers();
 
     vertx.connect(settings.host, settings.port, function() {
       kover.requireList(settings.require, callback)
@@ -88,6 +90,21 @@ var kover = {
         )
           return false;
       } 
+    }
+  },
+
+  getEventSubscribers: function() {
+    elements = document.getElementsByTagName("*");
+
+    for (i=0; i<elements.length; i++) {
+
+      eventName = elements[i].getSubscription();
+
+      if (eventName) { 
+        kover.Events.findOrCreate( eventName )
+        kover.Events.events[eventName].subscribers.push(elements[i]);
+      }
+
     }
   },
 
@@ -286,7 +303,8 @@ kover.Events = {
     }
 
     event.eventName = event_name;
-    event.memo = { trolo:'sdsss' };    
+    event.memo = {};    
+    event['subscribers'] = [];
 
     kover.Events.events[event_name] = event;
 
@@ -305,12 +323,21 @@ kover.Events = {
     } else {
       o.fireEvent("on" + event.eventType, event);
     }
+  },
+
+  updateSubscribersFor: function(eventName, data) {
+    e = kover.Events.events[eventName];
+
+    for (var i=0; i<e.subscribers.length; i++) {
+      e.subscribers[i].updateFromEvent(eventName, data);
+    }
+
   }
 }
 
 // gets a template name based on class 
 Element.prototype.tplName = function() {
-  for (i=0; i < this.classList.length; ++i) {
+  for (var i=0; i < this.classList.length; ++i) {
     if (this.classList[i].match(/tpl\-/)) {
       return this.classList[i].replace(/tpl\-/, '');
     }
@@ -331,3 +358,20 @@ Element.prototype.triggerEvent = function(event_name, data) {
   kover.Events.trigger(event_name, this, data);
 }
 
+Element.prototype.getSubscription = function() {
+  if (this.getAttribute('append-on'))
+    eventName = this.getAttribute('append-on');
+  else if (this.getAttribute('prepend-on')) {
+    eventName = this.getAttribute('prepend-on');
+  } else if(this.getAttribute('replace-on')) {
+    eventName = this.getAttribute('replace-on');
+  } else {
+    eventName = null;
+  }
+
+  return eventName;
+}
+
+Element.prototype.updateFromEvent = function(eventName, data) {
+  this.render(this.tplName() + '.ejs', data);
+}
