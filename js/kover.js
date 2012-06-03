@@ -8,23 +8,8 @@ vertx.rpc_id = function() {
   return id+=1;
 };
 
-vertx.createUUID = function () {
-  // http://www.ietf.org/rfc/rfc4122.txt
-  var s = [];
-  var hexDigits = "0123456789abcdef";
-  for (var i = 0; i < 36; i++) {
-      s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1);
-  }
-  s[14] = "4";  // bits 12-15 of the time_hi_and_version field to 0010
-  s[19] = hexDigits.substr((s[19] & 0x3) | 0x8, 1);  // bits 6-7 of the clock_seq_hi_and_reserved to 01
-  s[8] = s[13] = s[18] = s[23] = "-";
-
-  var uuid = s.join("");
-  return uuid;
-}
-
 vertx.connect = function(host, port, callback) {
-    vertx.user_channel = "eventbus"; //vertx.createUUID();
+    vertx.user_channel = "eventbus"; 
     vertx.eventbus_channel = "eventbus";
 
     vertx.connection = new vertx.EventBus("http://"+ host + ":" + port + "/eventbus");
@@ -57,17 +42,15 @@ var kover = {
     
     kover.settings = settings;
 
-    kover.assignHandlers("a", "onclick");
-    kover.assignHandlers("form", "onsubmit");
-    kover.getEventSubscribers();
+    kover.View.handleElements();
 
     vertx.connect(settings.host, settings.port, function() {
       kover.requireList(settings.require, callback)
     });
   },
 
-  assignHandlers: function(tagname, event_name) {
-    elements = document.getElementsByTagName(tagname);
+  assignHandlers: function(o, tagname, event_name) {
+    elements = o.getElementsByTagName(tagname);
 
     for (e=0; e<elements.length; e++) {
       elements[e].href = "javascript:void(0)";
@@ -93,14 +76,14 @@ var kover = {
     }
   },
 
-  getEventSubscribers: function() {
-    elements = document.getElementsByTagName("*");
+  getEventSubscribers: function(o) {
+    elements = o.getElementsByTagName("*");
 
     for (i=0; i<elements.length; i++) {
 
       eventName = elements[i].getSubscription();
 
-      if (eventName) { 
+      if (eventName != null) { 
         kover.Events.findOrCreate( eventName )
         kover.Events.events[eventName].subscribers.push(elements[i]);
       }
@@ -260,7 +243,17 @@ kover.View = {
        }
         
     });
+  },
+
+  // exec neccesarry JS for a new template
+  handleElements: function(o) {
+    o = o || document;
+
+    kover.assignHandlers(o, "a", "onclick");
+    kover.assignHandlers(o, "form", "onsubmit");
+    kover.getEventSubscribers(o);
   }
+
 }
 
 kover.Forms = {
@@ -326,8 +319,7 @@ kover.Events = {
   },
 
   updateSubscribersFor: function(eventName, data) {
-    e = kover.Events.events[eventName];
-
+    var e = kover.Events.events[eventName];
     for (var i=0; i<e.subscribers.length; i++) {
       e.subscribers[i].updateFromEvent(eventName, data);
     }
@@ -354,6 +346,9 @@ Element.prototype.render = function(filename, data, type) {
         that.innerHTML = kover.View.tmpl(content, data) + that.innerHTML;
       else
         that.innerHTML = kover.View.tmpl(content, data);
+
+      kover.View.handleElements(that);
+
     });
   })(this);
   
