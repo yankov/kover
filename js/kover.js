@@ -359,17 +359,9 @@ Element.prototype.triggerEvent = function(event_name, data) {
 }
 
 Element.prototype.getSubscription = function() {
-  if (this.getAttribute('append-on'))
-    eventName = this.getAttribute('append-on');
-  else if (this.getAttribute('prepend-on')) {
-    eventName = this.getAttribute('prepend-on');
-  } else if(this.getAttribute('replace-on')) {
-    eventName = this.getAttribute('replace-on');
-  } else {
-    eventName = null;
-  }
-
-  return eventName;
+  return this.getAttribute('append-on')  || 
+         this.getAttribute('prepend-on') || 
+         this.getAttribute('replace-on') || null;
 }
 
 Element.prototype.updateFromEvent = function(eventName, data) {
