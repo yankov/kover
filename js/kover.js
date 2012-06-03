@@ -345,10 +345,15 @@ Element.prototype.tplName = function() {
   return "index";
 }
 
-Element.prototype.render = function(filename, data) {
+Element.prototype.render = function(filename, data, type) {
   (function(that){
-    kover.View.loadFile(filename, function(content){
-      that.innerHTML = kover.View.tmpl(content, data);
+    kover.View.loadFile(filename, function(content){      
+      if (type == 'append') 
+        that.innerHTML += kover.View.tmpl(content, data);
+      else if (type == 'prepend')
+        that.innerHTML = kover.View.tmpl(content, data) + that.innerHTML;
+      else
+        that.innerHTML = kover.View.tmpl(content, data);
     });
   })(this);
   
@@ -358,12 +363,14 @@ Element.prototype.triggerEvent = function(event_name, data) {
   kover.Events.trigger(event_name, this, data);
 }
 
+Element.prototype.getRenderType = function() {
+  return this.getAttribute('append-on')  &&  "append"   || 
+         this.getAttribute('prepend-on') &&  "prepend"  || "replace";
+}
 Element.prototype.getSubscription = function() {
-  return this.getAttribute('append-on')  || 
-         this.getAttribute('prepend-on') || 
-         this.getAttribute('replace-on') || null;
+  return this.getAttribute( this.getRenderType() + "-on" ) || null;
 }
 
 Element.prototype.updateFromEvent = function(eventName, data) {
-  this.render(this.tplName() + '.ejs', data);
+  this.render(this.tplName() + '.ejs', data, this.getRenderType());
 }
