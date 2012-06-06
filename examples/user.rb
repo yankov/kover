@@ -15,8 +15,6 @@ class User
    end
 
    def find_by_name(user)
-     p "!!!"
-     p user
      u = User.where(:first_name => user['first_name']).first
      u.try(:as_json)
    end
