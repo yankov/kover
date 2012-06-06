@@ -3,6 +3,7 @@
 */
 
 vertx.connection = null;
+
 vertx.rpc_id = function() {
   id = typeof(id) != "undefined" ? id : 0;
   return id+=1;
@@ -156,10 +157,14 @@ var kover = {
             window[i][method] = function() {      
                 params = Array.prototype.slice.call(arguments);
 
-                func = arguments[arguments.length - 1]
-                
+                if (typeof arguments[arguments.length - 1] === "function") {
+                  func = arguments[arguments.length - 1]  
+                } else {
+                  func = null;
+                }
+
                 kover.rpc_exec(class_name + "." + method, params, function(message) {
-                  func(message);  
+                  if (func) func(message);  
                 });
             }
           
@@ -278,8 +283,7 @@ kover.Events = {
   events: {},
 
   findOrCreate: function(event_name) {
-    if (kover.Events.events[event_name])
-         return kover.Events.events[event_name];
+    if (kover.Events.events[event_name]) return kover.Events.events[event_name];
 
     return kover.Events.createEvent(event_name);
   },
@@ -329,7 +333,6 @@ kover.Events = {
 
 // gets a template name based on class 
 Element.prototype.tplName = function() {
-  
   if (this.getAttribute('tpl')) {
     return this.getAttribute('tpl');
   }
@@ -377,6 +380,3 @@ Element.prototype.updateFromEvent = function(eventName, data) {
   this.render(this.tplName() + '.ejs', data, this.getRenderType());
 }
 
-String.prototype.toCamel = function(){
-  return this.replace(/(\_[a-z])/g, function($1){return $1.toUpperCase().replace('','');});
-};

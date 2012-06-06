@@ -1,16 +1,31 @@
 class Post
+  include MongoMapper::Document
   include Kover::RPCable
 
-  allow_rpc_for :create, :edit
+  key :title, String
+  key :body,  String
+
+  allow_rpc_for :find_all, :create, :edit, :get
 
   class << self
-    def create(name)
-      "created #{name}"
+
+    def create(params)
+      post = Post.new(params)
+      post.save!
+      post.as_json
     end
 
-    def edit(name)
-      "edited #{name}"
+    def find_all
+      posts = Post.all
+      p posts
+      posts.as_json
     end
+
+    def get(id)
+      post = Post.find(id)
+      post.as_json
+    end
+
   end
 
 end

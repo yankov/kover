@@ -7,21 +7,16 @@
 <a call="user.met1(6,2)" />link 2</a>
 
 <!-- Form example: save to the dabase -->
-<form call="user.create" style="border: 1px solid black; padding:5px;width:300px;">
-  <p>First Name: <input type="text" name="first_name"  /> </p>
-  <p>Last Name: <input type="text" name="last_name"  /> </p>
+<form call="post.create" style="border: 1px solid black; padding:5px;width:300px;">
+  <div>
+    <div>Title:</div> 
+    <input type="text" name="title"  /> 
+  </div>
+  <p><textarea name="body" style="width:200px;height:100px;" /></textarea></p>
   <input type="submit" value="Save" />
 </form>
 
-<!-- Form example: get from the database -->
-<form call="user.find_by_name" style="border: 1px solid black; padding:5px;width:300px;">
-  <p>First Name: <input type="text" name="first_name"  /> </p>
-  <input type="submit" value="Find" />
-</form>
-
-<div class="user-met1">links output</div>
-<div class="user-create">form 1 output</div>
-<div class="user-find_by_name">form 2 output</div>
+<div class="user-create"></div>
 
 <div replace-on="news" class="tpl-news">
   First news block
@@ -30,8 +25,9 @@
 <div prepend-on="boom" class="tpl-news">
   Second news block
 </div>
+<div class="post-get"></div>
 
-<div id="div3">...</div>
+<div id="posts">...</div>
 
 <script type="text/javascript">
 
@@ -51,7 +47,10 @@
     // render template from test.ejs to #boom 
     // kover.View.render("test.ejs", { name: "EPA" }, "boom");
 
-    document.getElementById('div3').render("test.ejs", { name: "World" });
+    post.find_all(function(posts){
+      document.getElementById('posts').render("post/find_all.ejs", posts );
+    });
+    
 
     window.addEventListener('xyz', function(data){
       console.log('hello ' + data.memo.name);
