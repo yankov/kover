@@ -67,7 +67,7 @@ var kover = {
             (function(that){
               return function(message){
                 console.log(message);
-                kover.View.render(that.tplName() + '.ejs', message, that.tplName());
+                kover.View.render(that.tplName() + '.ejs', message, that.tplClassName());
               };
             })(this)
         )
@@ -329,12 +329,19 @@ kover.Events = {
 
 // gets a template name based on class 
 Element.prototype.tplName = function() {
-  for (var i=0; i < this.classList.length; ++i) {
-    if (this.classList[i].match(/tpl\-/)) {
-      return this.classList[i].replace(/tpl\-/, '');
-    }
+  
+  if (this.getAttribute('tpl')) {
+    return this.getAttribute('tpl');
   }
-  return "index";
+  else if (this.getAttribute('call')) {
+    return this.getAttribute('call').replace(/\(.*\)/,'').replace(/\./, '/');
+  } 
+
+  return "default";
+}
+
+Element.prototype.tplClassName = function() {
+  return this.tplName().replace(/\//, '-');
 }
 
 Element.prototype.render = function(filename, data, type) {
@@ -369,3 +376,7 @@ Element.prototype.getSubscription = function() {
 Element.prototype.updateFromEvent = function(eventName, data) {
   this.render(this.tplName() + '.ejs', data, this.getRenderType());
 }
+
+String.prototype.toCamel = function(){
+  return this.replace(/(\_[a-z])/g, function($1){return $1.toUpperCase().replace('','');});
+};
