@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+  <script type='text/javascript' src='../../js/sockjs-0.2.min.js'></script>
+  <script type='text/javascript' src='../../js/vertxbus.js'></script>
+  <script type='text/javascript' src='../../js/kover.js'></script>
+</head>
+
+<style type="text/css">
+  .well { margin:10px; }
+</style>
+<body>
+  
+<div class="row">
+  <div class="span5">
+    <!-- Form example: save post to the datbase -->
+    <form call="post.create" class="well span4">
+      <input type="text" name="title"  placeholder="Title.." /> 
+      <textarea name="body" placeholder="Type your text"/></textarea>
+
+      <p><button type="submit" class="btn">Save</button></p>
+    </form>
+  </div>
+
+  <div id="posts" class="well span3">...</div>
+</div>
+
+<div class="row">
+  <div class="post-get well" class="span3"></div>
+</div>
+
+<script type="text/javascript">
+
+  var settings = {
+    host: "192.168.1.9",
+    port: 8080,
+    templates: "file:///Users/yankov/projects/kover/examples/blog/templates",
+    require: ["post"]
+  }
+    console.log('hahaha')
+
+  kover.run(settings, function(){
+
+    post.find_all(function(posts){
+      document.getElementById('posts').render("post/find_all.ejs", posts );
+    });
+
+  }); 
+
+</script>
+
+</body>
+</html>
