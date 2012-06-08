@@ -9,11 +9,15 @@
 
 <style type="text/css">
   .well { margin:10px; }
+  #post-get { margin:10px;}
 </style>
+
 <body>
-  
+
 <div class="row">
+
   <div class="span5">
+
     <!-- Form example: save post to the datbase -->
     <form call="post.create" class="well span4">
       <input type="text" name="title"  placeholder="Title.." /> 
@@ -21,14 +25,14 @@
 
       <p><button type="submit" class="btn">Save</button></p>
     </form>
+
   </div>
 
   <div id="posts" class="well span3">...</div>
 </div>
 
-<div class="row">
-  <div class="post-get well" class="span3"></div>
-</div>
+<div class="post-get span4"></div>
+
 
 <script type="text/javascript">
 
@@ -38,13 +42,19 @@
     templates: "file:///Users/yankov/projects/kover/examples/blog/templates",
     require: ["post"]
   }
-    console.log('hahaha')
 
   kover.run(settings, function(){
 
     post.find_all(function(posts){
       document.getElementById('posts').render("post/find_all.ejs", posts );
     });
+
+
+    window.addEventListener('post.create:complete', function(data){
+
+     console.log('hello ' + data);
+
+    }, false);
 
   }); 
 

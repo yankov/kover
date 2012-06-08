@@ -164,7 +164,7 @@ var kover = {
                 }
 
                 kover.rpc_exec(class_name + "." + method, params, function(message) {
-                  if (func) func(message);  
+                  if (func) func(message);
                 });
             }
           
@@ -181,6 +181,7 @@ var kover = {
     vertx.connection.send(
        vertx.eventbus_channel, 
        kover.json_rpc_format(method_name, params, vertx.rpc_id()), function(message) {
+         kover.Events.trigger(method_name + ":complete", window, message); 
          callback(message);
        }
      );
