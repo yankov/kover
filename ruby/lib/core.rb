@@ -10,12 +10,20 @@ module Kover
       end
     end
 
+    def can_call?(klass, method)
+      return true if klass == Kover && method == 'rpc_white_list_for'
+      return true if klass.send(:rpc_white_list).include?(method.to_sym)
+      false
+    end
+
     def proccess(rpc_string)
       class_name, method = rpc_string['method'].split(".")
       klass = Object.const_get(class_name.capitalize)
 
       begin 
         params = rpc_string['params']
+
+        raise "No access to call #{klass.to_s}.#{method}." unless Kover.can_call?(klass, method)
 
         #TODO: find a sexy way to do this 
         result = if params.is_a?(Array)

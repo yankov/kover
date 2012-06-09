@@ -5,7 +5,7 @@ class Post
   key :title, String
   key :body,  String
 
-  allow_rpc_for :find_all, :create, :edit, :get
+  allow_rpc_for :find_all, :create, :edit, :get, :destroy
 
   class << self
 
