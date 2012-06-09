@@ -180,8 +180,12 @@ var kover = {
     vertx.connection.send(
        vertx.eventbus_channel, 
        kover.json_rpc_format(method_name, params, vertx.rpc_id()), function(message) {
+
+         if (message.error) throw method_name + ": " + message.error;
+
          kover.Events.trigger(method_name + ":complete", window, message); 
          kover.Events.updateSubscribersFor(method_name + ":complete", message);
+        
          callback(message);
        }
      );
