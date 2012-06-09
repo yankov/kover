@@ -28,11 +28,11 @@
 
   </div>
 
-  <div id="posts" class="well span3">...</div>
+  <div append-on="post.create:complete" tpl="post/create" id="posts" class="well span3">...</div>
+
 </div>
 
 <div class="post-get span4"></div>
-
 
 <script type="text/javascript">
 
@@ -52,7 +52,7 @@
 
     window.addEventListener('post.create:complete', function(data){
 
-     console.log('hello ' + data);
+     // console.log(data);
 
     }, false);
 

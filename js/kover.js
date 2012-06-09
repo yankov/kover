@@ -67,7 +67,6 @@ var kover = {
             params,
             (function(that){
               return function(message){
-                console.log(message);
                 kover.View.render(that.tplName() + '.ejs', message, that.tplClassName());
               };
             })(this)
@@ -83,7 +82,7 @@ var kover = {
     for (i=0; i<elements.length; i++) {
 
       eventName = elements[i].getSubscription();
-
+      
       if (eventName != null) { 
         kover.Events.findOrCreate( eventName )
         kover.Events.events[eventName].subscribers.push(elements[i]);
@@ -182,6 +181,7 @@ var kover = {
        vertx.eventbus_channel, 
        kover.json_rpc_format(method_name, params, vertx.rpc_id()), function(message) {
          kover.Events.trigger(method_name + ":complete", window, message); 
+         kover.Events.updateSubscribersFor(method_name + ":complete", message);
          callback(message);
        }
      );
@@ -195,7 +195,7 @@ var kover = {
 
 
 /* 
-   A simple template rendering systemд
+   A simple template rendering system
 */
 
 kover.View = {
@@ -325,6 +325,7 @@ kover.Events = {
 
   updateSubscribersFor: function(eventName, data) {
     var e = kover.Events.events[eventName];
+
     for (var i=0; i<e.subscribers.length; i++) {
       e.subscribers[i].updateFromEvent(eventName, data);
     }
