@@ -26,6 +26,12 @@ class Post
       post.as_json
     end
 
+    def destroy(id)
+      post = Post.find(id)
+      post.destroy
+      {:id => id}
+    end
+
   end
 
 end

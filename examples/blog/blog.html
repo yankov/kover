@@ -49,11 +49,10 @@
       document.getElementById('posts').render("post/find_all.ejs", posts );
     });
 
-
-    window.addEventListener('post.create:complete', function(data){
-
-     // console.log(data);
-
+    //remove element
+    window.addEventListener('post.destroy:complete', function(data){
+      el = document.getElementById("post_" + data.memo.result.id);
+      el.parentNode.removeChild(el);
     }, false);
 
   }); 
